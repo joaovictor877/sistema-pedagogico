@@ -1,0 +1,194 @@
+// generator and datasource
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Usuários do sistema ───────────────────────────────────────────────────
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  senha     String
+  perfil    Perfil   @default(PEDAGOGICO)
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Perfil {
+  ADMIN
+  PEDAGOGICO
+  INSTRUTOR
+}
+
+// ─── Beneficiário (aluno do projeto) ──────────────────────────────────────
+model Beneficiario {
+  id             Int                @id @default(autoincrement())
+  nome           String
+  cpf            String             @unique
+  rg             String?
+  dataNasc       DateTime
+  sexo           Sexo
+  telefone       String?
+  email          String?
+  endereco       String?
+  bairro         String?
+  cidade         String             @default("São Paulo")
+  responsavel    String?
+  telResponsavel String?
+  foto           String?
+  observacoes    String?
+  status         StatusBeneficiario @default(ATIVO)
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  matriculas   Matricula[]
+  certificados Certificado[]
+}
+
+enum Sexo {
+  MASCULINO
+  FEMININO
+  OUTRO
+}
+
+enum StatusBeneficiario {
+  ATIVO
+  INATIVO
+  CONCLUIDO
+}
+
+// ─── Cursos oferecidos ────────────────────────────────────────────────────
+model Curso {
+  id           Int      @id @default(autoincrement())
+  nome         String
+  descricao    String?
+  cargaHoraria Int
+  icone        String?
+  cor          String?
+  ativo        Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  turmas Turma[]
+}
+
+// ─── Instrutores ──────────────────────────────────────────────────────────
+model Instrutor {
+  id            Int      @id @default(autoincrement())
+  nome          String
+  email         String   @unique
+  telefone      String?
+  especialidade String?
+  cpf           String?  @unique
+  foto          String?
+  ativo         Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  turmas Turma[]
+}
+
+// ─── Turmas ───────────────────────────────────────────────────────────────
+model Turma {
+  id          Int         @id @default(autoincrement())
+  nome        String
+  cursoId     Int
+  instrutorId Int
+  diasSemana  String      // JSON stringified array: '["segunda","quarta"]'
+  horario     String
+  sala        String?
+  vagas       Int         @default(20)
+  status      StatusTurma @default(ATIVA)
+  dataInicio  DateTime?
+  dataFim     DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  curso        Curso         @relation(fields: [cursoId], references: [id])
+  instrutor    Instrutor     @relation(fields: [instrutorId], references: [id])
+  matriculas   Matricula[]
+  aulas        Aula[]
+  certificados Certificado[]
+}
+
+enum StatusTurma {
+  ATIVA
+  CONCLUIDA
+  SUSPENSA
+}
+
+// ─── Matrículas ────────────────────────────────────────────────────────────
+model Matricula {
+  id             Int             @id @default(autoincrement())
+  beneficiarioId Int
+  turmaId        Int
+  dataMatricula  DateTime        @default(now())
+  status         StatusMatricula @default(ATIVA)
+  observacoes    String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  beneficiario Beneficiario @relation(fields: [beneficiarioId], references: [id])
+  turma        Turma        @relation(fields: [turmaId], references: [id])
+  presencas    Presenca[]
+
+  @@unique([beneficiarioId, turmaId])
+}
+
+enum StatusMatricula {
+  ATIVA
+  TRANCADA
+  CONCLUIDA
+  CANCELADA
+}
+
+// ─── Aulas ────────────────────────────────────────────────────────────────
+model Aula {
+  id         Int      @id @default(autoincrement())
+  turmaId    Int
+  data       DateTime
+  conteudo   String?
+  observacao String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  turma     Turma      @relation(fields: [turmaId], references: [id])
+  presencas Presenca[]
+
+  @@unique([turmaId, data])
+}
+
+// ─── Presenças ───────────────────────────────────────────────────────────
+model Presenca {
+  id            Int      @id @default(autoincrement())
+  aulaId        Int
+  matriculaId   Int
+  presente      Boolean  @default(false)
+  justificativa String?
+  createdAt     DateTime @default(now())
+
+  aula      Aula      @relation(fields: [aulaId], references: [id])
+  matricula Matricula @relation(fields: [matriculaId], references: [id])
+
+  @@unique([aulaId, matriculaId])
+}
+
+// ─── Certificados ─────────────────────────────────────────────────────────
+model Certificado {
+  id             Int      @id @default(autoincrement())
+  beneficiarioId Int
+  turmaId        Int
+  dataEmissao    DateTime @default(now())
+  numeroRegistro String   @unique
+  observacoes    String?
+  createdAt      DateTime @default(now())
+
+  beneficiario Beneficiario @relation(fields: [beneficiarioId], references: [id])
+  turma        Turma        @relation(fields: [turmaId], references: [id])
+}
