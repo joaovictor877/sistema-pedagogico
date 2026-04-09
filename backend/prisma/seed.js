@@ -43,8 +43,8 @@ async function main() {
     console.log(`✅ Curso criado: ${curso.nome}`);
   }
 
-  // ─── Instrutores ────────────────────────────────────────────────────────
-  const instrutoresData = [
+  // ─── Educadores ────────────────────────────────────────────────────────
+  const educadoresData = [
     { nome: 'Carlos Mendes', email: 'carlos@pot.com', telefone: '(11) 98765-4321', especialidade: 'Informática e Tecnologia', cpf: '111.222.333-44' },
     { nome: 'Roberto Lima', email: 'roberto@pot.com', telefone: '(11) 97654-3210', especialidade: 'Barbearia e Estética Masculina', cpf: '222.333.444-55' },
     { nome: 'Ana Santos', email: 'ana@pot.com', telefone: '(11) 96543-2109', especialidade: 'Costura, Manicure e Artesanato', cpf: '333.444.555-66' },
@@ -52,26 +52,26 @@ async function main() {
     { nome: 'Maria Oliveira', email: 'maria@pot.com', telefone: '(11) 94321-0987', especialidade: 'Educação para o Trânsito', cpf: '555.666.777-88' },
   ];
 
-  const instrutores = [];
-  for (const inst of instrutoresData) {
-    const instrutor = await prisma.instrutor.upsert({
-      where: { email: inst.email },
+  const educadores = [];
+  for (const educ of educadoresData) {
+    const educador = await prisma.educador.upsert({
+      where: { email: educ.email },
       update: {},
-      create: inst,
+      create: educ,
     });
-    instrutores.push(instrutor);
-    console.log(`✅ Instrutor criado: ${instrutor.nome}`);
+    educadores.push(educador);
+    console.log(`✅ Educador criado: ${educador.nome}`);
   }
 
   // ─── Turmas ─────────────────────────────────────────────────────────────
   const turmasData = [
-    { nome: 'Informática - Manhã', cursoId: cursos[0].id, instrutorId: instrutores[0].id, diasSemana: JSON.stringify(['segunda', 'quarta', 'sexta']), horario: '08:00 - 10:00', sala: 'Lab 01', vagas: 20, dataInicio: new Date('2024-03-04') },
-    { nome: 'Barbearia - Tarde', cursoId: cursos[1].id, instrutorId: instrutores[1].id, diasSemana: JSON.stringify(['terça', 'quinta']), horario: '14:00 - 17:00', sala: 'Sala 03', vagas: 15, dataInicio: new Date('2024-03-05') },
-    { nome: 'Faça e Venda - Manhã', cursoId: cursos[2].id, instrutorId: instrutores[2].id, diasSemana: JSON.stringify(['terça', 'quinta']), horario: '09:00 - 11:00', sala: 'Sala 05', vagas: 25, dataInicio: new Date('2024-03-05') },
-    { nome: 'Costura - Tarde', cursoId: cursos[3].id, instrutorId: instrutores[2].id, diasSemana: JSON.stringify(['segunda', 'quarta']), horario: '14:00 - 16:00', sala: 'Oficina 01', vagas: 20, dataInicio: new Date('2024-03-04') },
-    { nome: 'Administração - Noite', cursoId: cursos[4].id, instrutorId: instrutores[3].id, diasSemana: JSON.stringify(['segunda', 'quarta', 'sexta']), horario: '19:00 - 21:00', sala: 'Sala 02', vagas: 30, dataInicio: new Date('2024-03-04') },
-    { nome: 'Transita - Sábado', cursoId: cursos[5].id, instrutorId: instrutores[4].id, diasSemana: JSON.stringify(['sábado']), horario: '09:00 - 12:00', sala: 'Auditório', vagas: 40, dataInicio: new Date('2024-03-09') },
-    { nome: 'Manicure - Manhã', cursoId: cursos[6].id, instrutorId: instrutores[2].id, diasSemana: JSON.stringify(['terça', 'quinta', 'sexta']), horario: '10:00 - 12:00', sala: 'Sala 04', vagas: 15, dataInicio: new Date('2024-03-05') },
+    { nome: 'Informática - Manhã', cursoId: cursos[0].id, educadorId: educadores[0].id, diasSemana: JSON.stringify(['segunda', 'quarta', 'sexta']), horario: '08:00 - 10:00', sala: 'Lab 01', vagas: 20, dataInicio: new Date('2024-03-04') },
+    { nome: 'Barbearia - Tarde', cursoId: cursos[1].id, educadorId: educadores[1].id, diasSemana: JSON.stringify(['terça', 'quinta']), horario: '14:00 - 17:00', sala: 'Sala 03', vagas: 15, dataInicio: new Date('2024-03-05') },
+    { nome: 'Faça e Venda - Manhã', cursoId: cursos[2].id, educadorId: educadores[2].id, diasSemana: JSON.stringify(['terça', 'quinta']), horario: '09:00 - 11:00', sala: 'Sala 05', vagas: 25, dataInicio: new Date('2024-03-05') },
+    { nome: 'Costura - Tarde', cursoId: cursos[3].id, educadorId: educadores[2].id, diasSemana: JSON.stringify(['segunda', 'quarta']), horario: '14:00 - 16:00', sala: 'Oficina 01', vagas: 20, dataInicio: new Date('2024-03-04') },
+    { nome: 'Administração - Noite', cursoId: cursos[4].id, educadorId: educadores[3].id, diasSemana: JSON.stringify(['segunda', 'quarta', 'sexta']), horario: '19:00 - 21:00', sala: 'Sala 02', vagas: 30, dataInicio: new Date('2024-03-04') },
+    { nome: 'Transita - Sábado', cursoId: cursos[5].id, educadorId: educadores[4].id, diasSemana: JSON.stringify(['sábado']), horario: '09:00 - 12:00', sala: 'Auditório', vagas: 40, dataInicio: new Date('2024-03-09') },
+    { nome: 'Manicure - Manhã', cursoId: cursos[6].id, educadorId: educadores[2].id, diasSemana: JSON.stringify(['terça', 'quinta', 'sexta']), horario: '10:00 - 12:00', sala: 'Sala 04', vagas: 15, dataInicio: new Date('2024-03-05') },
   ];
 
   const turmas = [];

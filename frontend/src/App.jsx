@@ -7,10 +7,11 @@ import Beneficiarios from './pages/Beneficiarios'
 import Cursos from './pages/Cursos'
 import Turmas from './pages/Turmas'
 import Presenca from './pages/Presenca'
-import Instrutores from './pages/Instrutores'
+import Educadores from './pages/Educadores'
 import Relatorios from './pages/Relatorios'
 import Certificados from './pages/Certificados'
 import Configuracoes from './pages/Configuracoes'
+import Usuarios from './pages/Usuarios'
 
 function PrivateRoute({ children }) {
   const { token } = useAuth()
@@ -34,10 +35,11 @@ export default function App() {
             <Route path="cursos" element={<Cursos />} />
             <Route path="turmas" element={<Turmas />} />
             <Route path="presenca" element={<Presenca />} />
-            <Route path="instrutores" element={<Instrutores />} />
+            <Route path="educadores" element={<Educadores />} />
             <Route path="relatorios" element={<Relatorios />} />
             <Route path="certificados" element={<Certificados />} />
             <Route path="configuracoes" element={<Configuracoes />} />
+            <Route path="usuarios" element={<Usuarios />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

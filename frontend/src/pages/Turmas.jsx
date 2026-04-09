@@ -12,7 +12,7 @@ const STATUS_COLORS = {
 }
 
 const EMPTY_FORM = {
-  nome: '', cursoId: '', instrutorId: '', diasSemana: [], horario: '',
+  nome: '', cursoId: '', educadorId: '', diasSemana: [], horario: '',
   sala: '', vagas: 20, status: 'ATIVA', dataInicio: '', dataFim: '',
 }
 
@@ -35,7 +35,7 @@ function Modal({ open, onClose, title, children }) {
 export default function Turmas() {
   const [turmas, setTurmas] = useState([])
   const [cursos, setCursos] = useState([])
-  const [instrutores, setInstrutores] = useState([])
+  const [educadores, setEducadores] = useState([])
   const [loading, setLoading] = useState(false)
   const [filtroStatus, setFiltroStatus] = useState('')
   const [filtrosCurso, setFiltrosCurso] = useState('')
@@ -50,14 +50,14 @@ export default function Turmas() {
       const params = {}
       if (filtroStatus) params.status = filtroStatus
       if (filtrosCurso) params.cursoId = filtrosCurso
-      const [turmasRes, cursosRes, instutoresRes] = await Promise.all([
+      const [turmasRes, cursosRes, educadoresRes] = await Promise.all([
         api.get('/turmas', { params }),
         api.get('/cursos'),
-        api.get('/instrutores')
+        api.get('/educadores')
       ])
       setTurmas(turmasRes.data)
       setCursos(cursosRes.data)
-      setInstrutores(instutoresRes.data)
+      setEducadores(educadoresRes.data)
     } catch { toast.error('Erro ao carregar') }
     finally { setLoading(false) }
   }
@@ -73,7 +73,7 @@ export default function Turmas() {
         ...EMPTY_FORM, ...turma,
         diasSemana: dias,
         cursoId: String(turma.cursoId),
-        instrutorId: String(turma.instrutorId),
+        educadorId: String(turma.educadorId),
         vagas: turma.vagas,
         dataInicio: turma.dataInicio ? turma.dataInicio.split('T')[0] : '',
         dataFim: turma.dataFim ? turma.dataFim.split('T')[0] : '',
@@ -97,7 +97,7 @@ export default function Turmas() {
 
   const salvar = async (e) => {
     e.preventDefault()
-    if (!form.nome || !form.cursoId || !form.instrutorId || !form.horario) {
+    if (!form.nome || !form.cursoId || !form.educadorId || !form.horario) {
       toast.error('Preencha os campos obrigatórios'); return
     }
     setSalvando(true)
@@ -105,7 +105,7 @@ export default function Turmas() {
       const payload = {
         ...form,
         cursoId: Number(form.cursoId),
-        instrutorId: Number(form.instrutorId),
+        educadorId: Number(form.educadorId),
         vagas: Number(form.vagas),
         diasSemana: JSON.stringify(form.diasSemana),
         dataInicio: form.dataInicio ? new Date(form.dataInicio + 'T12:00:00') : null,
@@ -153,7 +153,7 @@ export default function Turmas() {
               <tr className="bg-slate-50 border-b border-slate-100">
                 <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Turma</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Curso</th>
-                <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Instrutor</th>
+                <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Educador</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Horário</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Vagas</th>
                 <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Status</th>
@@ -174,7 +174,7 @@ export default function Turmas() {
                         {t.curso.icone} {t.curso.nome}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-slate-600">{t.instrutor.nome}</td>
+                    <td className="px-4 py-3 text-slate-600">{t.educador.nome}</td>
                     <td className="px-4 py-3">
                       <p className="text-slate-700 font-medium">{t.horario}</p>
                       <p className="text-xs text-slate-400">{dias.map(d => d.substring(0, 3)).join(', ')}</p>
@@ -217,10 +217,10 @@ export default function Turmas() {
               </select>
             </div>
             <div>
-              <label className="label">Instrutor *</label>
-              <select value={form.instrutorId} onChange={f('instrutorId')} className="input" required>
+              <label className="label">Educador *</label>
+              <select value={form.educadorId} onChange={f('educadorId')} className="input" required>
                 <option value="">Selecione...</option>
-                {instrutores.map(i => <option key={i.id} value={i.id}>{i.nome}</option>)}
+                {educadores.map(i => <option key={i.id} value={i.id}>{i.nome}</option>)}
               </select>
             </div>
           </div>

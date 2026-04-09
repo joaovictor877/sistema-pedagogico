@@ -21,8 +21,8 @@ function Modal({ open, onClose, title, children }) {
   )
 }
 
-export default function Instrutores() {
-  const [instrutores, setInstrutores] = useState([])
+export default function Educadores() {
+  const [educadores, setEducadores] = useState([])
   const [loading, setLoading] = useState(false)
   const [modalAberto, setModalAberto] = useState(false)
   const [editando, setEditando] = useState(null)
@@ -32,9 +32,9 @@ export default function Instrutores() {
   const carregar = async () => {
     setLoading(true)
     try {
-      const { data } = await api.get('/instrutores')
-      setInstrutores(data)
-    } catch { toast.error('Erro ao carregar instrutores') }
+      const { data } = await api.get('/educadores')
+      setEducadores(data)
+    } catch { toast.error('Erro ao carregar educadores') }
     finally { setLoading(false) }
   }
 
@@ -54,11 +54,11 @@ export default function Instrutores() {
     setSalvando(true)
     try {
       if (editando) {
-        await api.put(`/instrutores/${editando.id}`, form)
-        toast.success('Instrutor atualizado!')
+        await api.put(`/educadores/${editando.id}`, form)
+        toast.success('Educador atualizado!')
       } else {
-        await api.post('/instrutores', form)
-        toast.success('Instrutor cadastrado!')
+        await api.post('/educadores', form)
+        toast.success('Educador cadastrado!')
       }
       fecharModal(); carregar()
     } catch (err) {
@@ -68,7 +68,7 @@ export default function Instrutores() {
 
   const desativar = async (id, nome) => {
     if (!confirm(`Desativar ${nome}?`)) return
-    try { await api.delete(`/instrutores/${id}`); toast.success('Instrutor desativado'); carregar() }
+    try { await api.delete(`/educadores/${id}`); toast.success('Educador desativado'); carregar() }
     catch { toast.error('Erro ao desativar') }
   }
 
@@ -77,14 +77,14 @@ export default function Instrutores() {
   return (
     <div className="space-y-5">
       <div className="flex justify-end">
-        <button onClick={() => abrirModal()} className="btn-primary"><Plus className="w-4 h-4" /> Novo Instrutor</button>
+        <button onClick={() => abrirModal()} className="btn-primary"><Plus className="w-4 h-4" /> Novo Educador</button>
       </div>
 
       {loading ? (
         <div className="flex justify-center py-12"><div className="w-10 h-10 border-4 border-violet-600 border-t-transparent rounded-full animate-spin" /></div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-          {instrutores.map((inst) => (
+          {educadores.map((inst) => (
             <div key={inst.id} className={`card group hover:shadow-md transition-all ${!inst.ativo ? 'opacity-60' : ''}`}>
               <div className="flex items-start justify-between mb-4">
                 <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white text-xl font-bold flex items-center justify-center">
@@ -124,11 +124,11 @@ export default function Instrutores() {
         </div>
       )}
 
-      <Modal open={modalAberto} onClose={fecharModal} title={editando ? 'Editar Instrutor' : 'Novo Instrutor'}>
+      <Modal open={modalAberto} onClose={fecharModal} title={editando ? 'Editar Educador' : 'Novo Educador'}>
         <form onSubmit={salvar} className="p-6 space-y-4">
           <div>
             <label className="label">Nome Completo *</label>
-            <input value={form.nome} onChange={f('nome')} className="input" placeholder="Nome do instrutor" required />
+            <input value={form.nome} onChange={f('nome')} className="input" placeholder="Nome do educador" required />
           </div>
           <div>
             <label className="label">E-mail *</label>

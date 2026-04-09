@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const ctrl = require('../controllers/instrutoresController');
+const ctrl = require('../controllers/educadoresController');
 const router = Router();
 
 router.get('/', ctrl.listar);

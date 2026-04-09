@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 const listar = async (req, res, next) => {
   try {
-    const instrutores = await prisma.instrutor.findMany({
+    const instrutores = await prisma.educador.findMany({
       where: req.query.ativo !== undefined ? { ativo: req.query.ativo === 'true' } : {},
       orderBy: { nome: 'asc' },
       include: { _count: { select: { turmas: true } } },
@@ -17,7 +17,7 @@ const listar = async (req, res, next) => {
 
 const buscarPorId = async (req, res, next) => {
   try {
-    const instrutor = await prisma.instrutor.findUnique({
+    const instrutor = await prisma.educador.findUnique({
       where: { id: Number(req.params.id) },
       include: {
         turmas: {
@@ -28,7 +28,7 @@ const buscarPorId = async (req, res, next) => {
         },
       },
     });
-    if (!instrutor) return res.status(404).json({ mensagem: 'Instrutor não encontrado' });
+    if (!instrutor) return res.status(404).json({ mensagem: 'Educador não encontrado' });
     res.json(instrutor);
   } catch (err) {
     next(err);
@@ -37,7 +37,7 @@ const buscarPorId = async (req, res, next) => {
 
 const criar = async (req, res, next) => {
   try {
-    const instrutor = await prisma.instrutor.create({ data: req.body });
+    const instrutor = await prisma.educador.create({ data: req.body });
     res.status(201).json(instrutor);
   } catch (err) {
     next(err);
@@ -46,7 +46,7 @@ const criar = async (req, res, next) => {
 
 const atualizar = async (req, res, next) => {
   try {
-    const instrutor = await prisma.instrutor.update({
+    const instrutor = await prisma.educador.update({
       where: { id: Number(req.params.id) },
       data: req.body,
     });
@@ -58,11 +58,11 @@ const atualizar = async (req, res, next) => {
 
 const remover = async (req, res, next) => {
   try {
-    await prisma.instrutor.update({
+    await prisma.educador.update({
       where: { id: Number(req.params.id) },
       data: { ativo: false },
     });
-    res.json({ mensagem: 'Instrutor desativado com sucesso' });
+    res.json({ mensagem: 'Educador desativado com sucesso' });
   } catch (err) {
     next(err);
   }

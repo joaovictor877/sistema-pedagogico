@@ -12,14 +12,17 @@ const app = express();
 app.use(helmet());
 
 // ─── CORS ─────────────────────────────────────────────────────────────────
-const allowedOrigins = [
-  process.env.FRONTEND_URL || 'http://localhost:5173',
-  'http://localhost:3000',
-];
+const corsRaw = process.env.FRONTEND_URLS || process.env.FRONTEND_URL || 'http://localhost:5173,http://localhost:3000';
+const allowedOrigins = corsRaw
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const allowAllOrigins = allowedOrigins.includes('*');
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+      if (!origin || allowAllOrigins || allowedOrigins.includes(origin)) return callback(null, true);
       callback(new Error('Origem não permitida pelo CORS'));
     },
     credentials: true,

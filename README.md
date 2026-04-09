@@ -47,6 +47,27 @@ sistema-pedagogico/
 docker-compose up -d
 ```
 
+### 1.1 Deploy em rede interna (empresa)
+Este modo sobe **frontend + backend + banco** no Docker e publica somente a porta do frontend para usuários da rede.
+
+```bash
+docker compose up -d --build
+```
+
+Acesso pela rede (a partir de outros PCs):
+- **App**: `http://IP_DO_PC_SERVIDOR/`
+
+Observações:
+- O `PgAdmin` fica em perfil opcional e ligado apenas no host local.
+- Para abrir `PgAdmin` no servidor, use:
+
+```bash
+docker compose --profile admin up -d
+```
+
+- Libere a porta `80/TCP` no firewall do Windows do PC servidor.
+- Se quiser restringir CORS a domínios específicos, ajuste `FRONTEND_URLS` no `docker-compose.yml`.
+
 ### 2. Backend
 ```bash
 cd backend

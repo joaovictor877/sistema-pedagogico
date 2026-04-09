@@ -23,7 +23,7 @@ model Usuario {
 enum Perfil {
   ADMIN
   PEDAGOGICO
-  INSTRUTOR
+  EDUCADOR @map("INSTRUTOR")
 }
 
 // ─── Beneficiário (aluno do projeto) ──────────────────────────────────────
@@ -78,8 +78,8 @@ model Curso {
   turmas Turma[]
 }
 
-// ─── Instrutores ──────────────────────────────────────────────────────────
-model Instrutor {
+// ─── Educadores ──────────────────────────────────────────────────────────
+model Educador {
   id            Int      @id @default(autoincrement())
   nome          String
   email         String   @unique
@@ -92,6 +92,8 @@ model Instrutor {
   updatedAt     DateTime @updatedAt
 
   turmas Turma[]
+
+  @@map("Instrutor")
 }
 
 // ─── Turmas ───────────────────────────────────────────────────────────────
@@ -99,7 +101,7 @@ model Turma {
   id          Int         @id @default(autoincrement())
   nome        String
   cursoId     Int
-  instrutorId Int
+  educadorId  Int    @map("instrutorId")
   diasSemana  String      // JSON stringified array: '["segunda","quarta"]'
   horario     String
   sala        String?
@@ -111,7 +113,7 @@ model Turma {
   updatedAt   DateTime    @updatedAt
 
   curso        Curso         @relation(fields: [cursoId], references: [id])
-  instrutor    Instrutor     @relation(fields: [instrutorId], references: [id])
+  educador     Educador      @relation(fields: [educadorId], references: [id])
   matriculas   Matricula[]
   aulas        Aula[]
   certificados Certificado[]

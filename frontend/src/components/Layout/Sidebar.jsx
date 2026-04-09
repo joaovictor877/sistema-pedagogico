@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import {
   LayoutDashboard, Users, BookOpen, GraduationCap, ClipboardCheck,
-  UserSquare2, BarChart3, Award, Settings, LogOut, Layers,
+  UserSquare2, BarChart3, Award, Settings, LogOut, Layers, ShieldCheck,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
@@ -11,10 +11,14 @@ const NAV_ITEMS = [
   { path: '/cursos', label: 'Cursos', icon: BookOpen },
   { path: '/turmas', label: 'Turmas', icon: Layers },
   { path: '/presenca', label: 'Presença', icon: ClipboardCheck },
-  { path: '/instrutores', label: 'Instrutores', icon: UserSquare2 },
+  { path: '/educadores', label: 'Educadores', icon: UserSquare2 },
   { path: '/relatorios', label: 'Relatórios', icon: BarChart3 },
   { path: '/certificados', label: 'Certificados', icon: Award },
   { path: '/configuracoes', label: 'Configurações', icon: Settings },
+]
+
+const ADMIN_ITEMS = [
+  { path: '/usuarios', label: 'Usuários', icon: ShieldCheck },
 ]
 
 export default function Sidebar() {
@@ -60,6 +64,27 @@ export default function Sidebar() {
             <span className="text-sm font-medium">{label}</span>
           </NavLink>
         ))}
+        {usuario?.perfil === 'ADMIN' && (
+          <>
+            <div className="mx-3 my-2 border-t border-white/10" />
+            {ADMIN_ITEMS.map(({ path, label, icon: Icon }) => (
+              <NavLink
+                key={path}
+                to={path}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-150 ${
+                    isActive
+                      ? 'bg-red-600/70 text-white shadow-sm'
+                      : 'text-red-300 hover:bg-white/10 hover:text-white'
+                  }`
+                }
+              >
+                <Icon className="w-[18px] h-[18px] flex-shrink-0" />
+                <span className="text-sm font-medium">{label}</span>
+              </NavLink>
+            ))}
+          </>
+        )}
       </nav>
 
       {/* Footer user info */}

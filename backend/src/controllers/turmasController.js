@@ -14,7 +14,7 @@ const listar = async (req, res, next) => {
       orderBy: { nome: 'asc' },
       include: {
         curso: true,
-        instrutor: true,
+        educador: true,
         _count: { select: { matriculas: { where: { status: 'ATIVA' } } } },
       },
     });
@@ -30,7 +30,7 @@ const buscarPorId = async (req, res, next) => {
       where: { id: Number(req.params.id) },
       include: {
         curso: true,
-        instrutor: true,
+        educador: true,
         matriculas: {
           where: { status: 'ATIVA' },
           include: { beneficiario: true },
@@ -54,12 +54,12 @@ const criar = async (req, res, next) => {
         ? JSON.stringify(req.body.diasSemana)
         : req.body.diasSemana,
       cursoId: Number(req.body.cursoId),
-      instrutorId: Number(req.body.instrutorId),
+      educadorId: Number(req.body.educadorId),
       vagas: Number(req.body.vagas),
     };
     const turma = await prisma.turma.create({
       data,
-      include: { curso: true, instrutor: true },
+      include: { curso: true, educador: true },
     });
     res.status(201).json(turma);
   } catch (err) {
@@ -72,13 +72,13 @@ const atualizar = async (req, res, next) => {
     const data = { ...req.body };
     if (Array.isArray(data.diasSemana)) data.diasSemana = JSON.stringify(data.diasSemana);
     if (data.cursoId) data.cursoId = Number(data.cursoId);
-    if (data.instrutorId) data.instrutorId = Number(data.instrutorId);
+    if (data.educadorId) data.educadorId = Number(data.educadorId);
     if (data.vagas) data.vagas = Number(data.vagas);
 
     const turma = await prisma.turma.update({
       where: { id: Number(req.params.id) },
       data,
-      include: { curso: true, instrutor: true },
+      include: { curso: true, educador: true },
     });
     res.json(turma);
   } catch (err) {
